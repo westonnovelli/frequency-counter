@@ -5,7 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: calc(100vh - 8px);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 code {
@@ -15,4 +17,5 @@ code {
 
 #root {
   height: 100%;
+  overflow: hidden;
 }

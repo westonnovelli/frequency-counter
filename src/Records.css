@@ -1,9 +1,10 @@
 .records {
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
-.records.group {
+.records .group {
     margin-bottom: 8px;
 }
 
@@ -14,4 +15,22 @@
 
 .group-title {
     font-weight: bold;
+}
+
+.record-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.record-item-details {
+    display: flex;
+}
+
+.record-sub-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.record-sub-items .record-item-details {
+    margin-left: 8px;
 }

@@ -3,15 +3,18 @@ export interface Recordable {
     timestamp: number;
     count: number;
     note?: string;
+    subRecords?: Recordable[];
 }
 
 export type GroupedRecordable = Record<string, Recordable[]>;
 
 // assumes a sorted list of records
 export const debounce = (records: Recordable[], debounceValue = 60000) => {
-    return records.reduce<Recordable[]>((acc, r, i) => {
-        if (r.timestamp - acc[acc.length - 1]?.timestamp < debounceValue) {
-            acc[acc.length - 1].count += 1;
+    return records.reduce<Recordable[]>((acc, r) => {
+        const prev = acc[acc.length - 1];
+        if (r.timestamp - prev?.timestamp < debounceValue) {
+            prev.count += 1;
+            prev.subRecords = (prev.subRecords ?? []).concat(r);
             return acc;
         } else {
             return acc.concat({...r});
@@ -44,7 +47,7 @@ class RecordBuilder {
         return this.records;
     }
 
-    public debouce(debounceValue?: number): RecordBuilder {
+    public debounce(debounceValue?: number): RecordBuilder {
         this.records = debounce(this.records, debounceValue);
         return this;
     }

@@ -1,4 +1,4 @@
-import { debounce } from "./summaries";
+import { debounce } from "./Recordable";
 
 test('[debounce] collapses records within debounceValue', () => {
     const input = [{
