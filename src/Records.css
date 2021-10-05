@@ -1,0 +1,17 @@
+.records {
+    display: flex;
+    flex-direction: column;
+}
+
+.records.group {
+    margin-bottom: 8px;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+}
+
+.group-title {
+    font-weight: bold;
+}
