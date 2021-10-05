@@ -16,9 +16,33 @@ h1 {
   width: 100vw;
   position: fixed;
   top: 0;
-  bottom: 0;
+  bottom: 48px;
   left: 0;
   right: 0;
   background-color: transparent;
   touch-action: manipulation; /* disable double touch to zoom */
+  margin: -8px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 48px);
+}
+
+.swipe {
+  height: 48px;
+  width: 100%;
+  touch-action: none;
+  background: gray;
+}
+
+.done {
+  height: 48px;
+  width: 100%;
+  background-color: #192d9e;
+  border-radius: 3px;
+  font-size: 16px;
+  color: white;
 }

@@ -8,7 +8,7 @@ export interface Recordable {
 export type GroupedRecordable = Record<string, Recordable[]>;
 
 // assumes a sorted list of records
-export const debounce = (records: Recordable[], debounceValue = 2000) => {
+export const debounce = (records: Recordable[], debounceValue = 60000) => {
     return records.reduce<Recordable[]>((acc, r, i) => {
         if (r.timestamp - acc[acc.length - 1]?.timestamp < debounceValue) {
             acc[acc.length - 1].count += 1;
@@ -22,7 +22,8 @@ export const debounce = (records: Recordable[], debounceValue = 2000) => {
 export const groupByDate = (records: Recordable[]) => {
     return records.reduce<GroupedRecordable>((acc, record) => {
         const date = new Date(record.timestamp);
-        const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        // month is 0 indexed
+        const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         if (acc[dateKey]) {
             acc[dateKey] = acc[dateKey].concat([record]);
         } else {
