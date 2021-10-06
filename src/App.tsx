@@ -9,13 +9,21 @@ import Records from './Records';
 import RecordBuilder from './Recordable';
 
 function App() {
+  const [mode, setMode] = React.useState(false);
   const { save, load } = usePersistence<Recordable[]>();
-  const [records, record] = useRecorder(load([] as Recordable[]), save);
+  const {
+    records,
+    addRecord,
+    queue,
+    queueUpdate,
+    cancelQueue,
+    submitQueue,
+  } = useRecorder(load([] as Recordable[]), save);
 
-  const summary = new RecordBuilder(records).debounce().groupByDate();
+  const base = mode && queue.length > 0 ? queue : records;
+  const summary = new RecordBuilder(base).debounce().groupByDate();
 
   const ref = React.useRef<HTMLDivElement | null>(null);
-  const [mode, setMode] = React.useState(false);
   usePinch(
     () => {
       setMode(true);
@@ -28,15 +36,26 @@ function App() {
 
   return (
     <div className="App">
-      {!mode && <div id="receiver" onClick={record} ref={ref} />}
+      {!mode && <div id="receiver" onClick={addRecord} ref={ref} />}
       <h1>Frequency</h1>
       <div className="container">
-        <Records records={summary} mode={mode} />
+        <Records records={summary} mode={mode} updateRecord={queueUpdate} />
       </div>
       {mode && (
-        <button className="done" onClick={() => setMode(false)}>
-          Save
-        </button>
+        <div className="mode-tools">
+          <button className="cancel" onClick={() => {
+            cancelQueue();
+            setMode(false);
+          }}>
+            Cancel
+          </button>
+          <button className="done" onClick={() => {
+            submitQueue();
+            setMode(false);
+          }}>
+            Save
+          </button>
+        </div>
       )}
     </div>
   );

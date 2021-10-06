@@ -5,11 +5,13 @@ import './Records.css';
 interface Props {
   records: GroupedRecordable;
   mode: boolean;
+  updateRecord: (id: string, value: Recordable) => void;
 }
 
 interface TProps {
   record: Recordable;
   mode: boolean;
+  update: (value: Recordable) => void;
 }
 
 // 2021-10-05T15:22:001.22Z => 2021-10-05T15:22
@@ -20,32 +22,33 @@ function toInput(date: Date) {
   return split.join(':');
 }
 
-const Timestamp: React.FC<TProps> = ({ record, mode }) => {
-  const time = new Date(record.timestamp).toLocaleTimeString();
-  const [controlledTime, setControlledTime] = React.useState(
-    new Date(record.timestamp)
-  );
+const Timestamp: React.FC<TProps> = ({ record, mode, update }) => {
+  const date = new Date(record.timestamp)
+  const time = mode ? toInput(date) : date.toLocaleTimeString();
   return mode ? (
     <input
       type="datetime-local"
-      value={toInput(controlledTime)}
-      onChange={(e) => setControlledTime(new Date(e.target.value))}
+      value={time}
+      onChange={(e) => update({
+        ...record,
+        timestamp: new Date(e.target.value).getTime(),
+      })}
     />
   ) : (
     <div className="record-time">{time}</div>
   );
 };
 
-const RecordDetails: React.FC<TProps> = ({ record, mode }) => {
+const RecordDetails: React.FC<TProps> = ({ record, mode, update }) => {
   return (
     <div className="record-item-details">
-      <Timestamp record={record} mode={mode} /> -{' '}
+      <Timestamp record={record} mode={mode} update={update} /> -{' '}
       <div className="record-count">{record.count}</div>
     </div>
   );
 };
 
-const Records: React.FC<Props> = ({ records, mode }) => {
+const Records: React.FC<Props> = ({ records, mode, updateRecord }) => {
   return (
     <div className="records">
       {Object.keys(records)
@@ -54,15 +57,16 @@ const Records: React.FC<Props> = ({ records, mode }) => {
           <div className="group" key={group}>
             <div className="group-title">{group}</div>
             {records[group].map((record) => (
-              <div key={record.timestamp} className="record-item">
-                <RecordDetails record={record} mode={mode} />
+              <div key={record.id} className="record-item">
+                <RecordDetails record={record} mode={mode} update={(u) => updateRecord(record.id, u)} />
                 {mode && record.subRecords && (
                   <div className="record-sub-items">
                     {record.subRecords.map((subRecord) => (
                       <RecordDetails
                         record={subRecord}
                         mode={mode}
-                        key={subRecord.timestamp}
+                        update={(u) => updateRecord(subRecord.id, u)}
+                        key={subRecord.id}
                       />
                     ))}
                   </div>

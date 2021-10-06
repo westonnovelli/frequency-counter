@@ -1,5 +1,6 @@
 
 export interface Recordable {
+    id: string;
     timestamp: number;
     count: number;
     note?: string;
@@ -36,6 +37,15 @@ export const groupByDate = (records: Recordable[]) => {
     }, {});
 };
 
+export const compress = (records: Recordable[]) => {
+    return records.map((record, i) => {
+        return {
+            ...record,
+            id: `${i}`,
+        };
+    });
+}
+
 class RecordBuilder {
     private records;
 
@@ -54,6 +64,11 @@ class RecordBuilder {
 
     public groupByDate(): GroupedRecordable {
         return groupByDate(this.records);
+    }
+
+    public compress(): RecordBuilder {
+        this.records = compress(this.records);
+        return this;
     }
 }
 
