@@ -8,6 +8,8 @@ import usePersistence from './usePersistence';
 import Records from './Records';
 import RecordBuilder from './Recordable';
 
+const DEV_MODE = process.env.NODE_ENV === 'development';
+
 function App() {
   const [mode, setMode] = React.useState(false);
   const { save, load } = usePersistence<Recordable[]>();
@@ -29,7 +31,7 @@ function App() {
       setMode(true);
     },
     onWheel: (e) => {
-      if (e.ctrlKey) {
+      if (DEV_MODE && e.ctrlKey) {
         setMode(true);
       }
     }},
