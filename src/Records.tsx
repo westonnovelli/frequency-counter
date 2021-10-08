@@ -1,6 +1,8 @@
 import type { GroupedRecordable, Recordable } from './Recordable';
 import React from 'react';
 import './Records.css';
+import { format } from 'date-fns/esm';
+import { editTime } from './release-flags';
 
 interface Props {
   records: GroupedRecordable;
@@ -14,18 +16,13 @@ interface TProps {
   update: (value: Recordable) => void;
 }
 
-// 2021-10-05T15:22:001.22Z => 2021-10-05T15:22
-function toInput(date: Date) {
-  const iso = date.toISOString();
-  const split = iso.split(':');
-  split.pop();
-  return split.join(':');
-}
-
 const Timestamp: React.FC<TProps> = ({ record, mode, update }) => {
   const date = new Date(record.timestamp)
-  const time = mode ? toInput(date) : date.toLocaleTimeString();
-  return mode ? (
+  const time = editTime && mode
+    ? `${format(date, 'yyyy-MM-dd')}T${format(date, 'HH:mm')}`
+    : format(date, 'p');
+
+  return editTime && mode ? (
     <input
       type="datetime-local"
       value={time}
@@ -39,11 +36,26 @@ const Timestamp: React.FC<TProps> = ({ record, mode, update }) => {
   );
 };
 
+const Note: React.FC<TProps> = ({ record, mode, update }) => {
+  return mode ? (
+    <input
+      value={record.note ?? ''}
+      onChange={(e) => update({
+        ...record,
+        note: e.target.value,
+      })}
+    />
+  ) : (
+    <div className="record-note">{record.note}</div>
+  );
+};
+
 const RecordDetails: React.FC<TProps> = ({ record, mode, update }) => {
   return (
     <div className="record-item-details">
-      <Timestamp record={record} mode={mode} update={update} /> -{' '}
-      <div className="record-count">{record.count}</div>
+      <Timestamp record={record} mode={mode} update={update} />
+      <div className="record-count">{(record.subRecords ?? []).length + 1}</div>
+      <Note record={record} mode={mode} update={update} />
     </div>
   );
 };

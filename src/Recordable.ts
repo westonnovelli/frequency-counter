@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 
 export interface Recordable {
     id: string;
@@ -14,7 +15,6 @@ export const debounce = (records: Recordable[], debounceValue = 60000) => {
     return records.reduce<Recordable[]>((acc, r) => {
         const prev = acc[acc.length - 1];
         if (r.timestamp - prev?.timestamp < debounceValue) {
-            prev.count += 1;
             prev.subRecords = (prev.subRecords ?? []).concat(r);
             return acc;
         } else {
@@ -25,9 +25,7 @@ export const debounce = (records: Recordable[], debounceValue = 60000) => {
 
 export const groupByDate = (records: Recordable[]) => {
     return records.reduce<GroupedRecordable>((acc, record) => {
-        const date = new Date(record.timestamp);
-        // month is 0 indexed
-        const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        const dateKey = format(new Date(record.timestamp), 'PP');
         if (acc[dateKey]) {
             acc[dateKey] = acc[dateKey].concat([record]);
         } else {

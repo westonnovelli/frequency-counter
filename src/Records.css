@@ -11,6 +11,7 @@
 .group {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .group-title {
@@ -20,10 +21,15 @@
 .record-item {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .record-item-details {
     display: flex;
+    gap: 8px;
+    width: 100%;
+    padding: 4px 0;
+    overflow: hidden;
 }
 
 .record-sub-items {
@@ -33,4 +39,16 @@
 
 .record-sub-items .record-item-details {
     margin-left: 8px;
+}
+
+.record-time {
+    flex: 0 0 20%;
+}
+
+.record-count {
+    flex: 0 0 10%;
+}
+
+.record-note {
+    flex: 0 0 auto;
 }

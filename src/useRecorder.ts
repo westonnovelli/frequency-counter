@@ -34,9 +34,10 @@ const useRecorder = (seed = [] as Recordable[], save?: (data: any) => void ): Re
             const base = prev.length === 0 ? records : prev;
             const next = base.map((r) => {
                 if (r.id === id) {
+                    const { subRecords, ...rest } = value;
                     return {
                         ...r,
-                        ...value,
+                        ...rest,
                     };
                 }
                 return r;
@@ -47,10 +48,12 @@ const useRecorder = (seed = [] as Recordable[], save?: (data: any) => void ): Re
 
     const cancelQueue = () => {
         setQueue(records);
+        setQueue([]);
     };
 
     const submitQueue = () => {
         setRecords(queue);
+        setQueue([]);
     };
     
     return { records, addRecord, setRecords, queue, queueUpdate, cancelQueue, submitQueue };

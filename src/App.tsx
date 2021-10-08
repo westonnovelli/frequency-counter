@@ -1,7 +1,7 @@
 import type { Recordable } from './Recordable';
 
 import React from 'react';
-import { usePinch } from '@use-gesture/react';
+import { useGesture } from '@use-gesture/react';
 import './App.css';
 import useRecorder from './useRecorder';
 import usePersistence from './usePersistence';
@@ -24,13 +24,17 @@ function App() {
   const summary = new RecordBuilder(base).debounce().groupByDate();
 
   const ref = React.useRef<HTMLDivElement | null>(null);
-  usePinch(
-    () => {
+  useGesture({
+    onPinch: () => {
       setMode(true);
     },
+    onWheel: (e) => {
+      if (e.ctrlKey) {
+        setMode(true);
+      }
+    }},
     {
       target: ref,
-      preventDefault: true,
     }
   );
 
@@ -49,7 +53,7 @@ function App() {
           }}>
             Cancel
           </button>
-          <button className="done" onClick={() => {
+          <button className="done" disabled={queue.length === 0} onClick={() => {
             submitQueue();
             setMode(false);
           }}>
