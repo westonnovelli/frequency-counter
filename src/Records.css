@@ -1,7 +1,8 @@
 .records {
     display: flex;
-    flex-direction: column;
     overflow: auto;
+    gap: 32px;
+    margin: 0 32px;
 }
 
 .records .group {
@@ -11,6 +12,7 @@
 .group {
     display: flex;
     flex-direction: column;
+    flex: 0 0 80vw;
     overflow: hidden;
 }
 
