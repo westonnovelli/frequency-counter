@@ -3,6 +3,7 @@
     overflow: auto;
     gap: 32px;
     margin: 0 32px;
+    height: 100vh;
 }
 
 .records .group {
