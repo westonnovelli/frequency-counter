@@ -11,7 +11,7 @@ export interface Recordable {
 export type GroupedRecordable = Record<string, Recordable[]>;
 
 // assumes a sorted list of records
-export const debounce = (records: Recordable[], debounceValue = 60000) => {
+export const debounce = (records: Recordable[], debounceValue = 2000) => {
     return records.reduce<Recordable[]>((acc, r) => {
         const prev = acc[acc.length - 1];
         if (r.timestamp - prev?.timestamp < debounceValue) {

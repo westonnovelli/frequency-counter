@@ -40,9 +40,12 @@ function App() {
     }
   );
 
+  const handleClick = () => {
+    !mode && addRecord();
+  }
+
   return (
-    <div className="App">
-      {!mode && <div id="receiver" onClick={addRecord} ref={ref} />}
+    <div className="App" onClick={handleClick} ref={ref}>
       <h1>Frequency</h1>
       <div className="container">
         <Records records={summary} mode={mode} updateRecord={queueUpdate} />

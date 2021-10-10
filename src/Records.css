@@ -11,11 +11,17 @@
 .group {
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .group-title {
     font-weight: bold;
+}
+
+.record-list {
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    max-height: 100vh;
 }
 
 .record-item {

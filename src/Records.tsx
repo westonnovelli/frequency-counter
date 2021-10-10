@@ -3,6 +3,7 @@ import React from 'react';
 import './Records.css';
 import { format } from 'date-fns/esm';
 import { editTime } from './release-flags';
+import { compareAsc } from 'date-fns';
 
 interface Props {
   records: GroupedRecordable;
@@ -10,11 +11,14 @@ interface Props {
   updateRecord: (id: string, value: Recordable) => void;
 }
 
-interface TProps {
+type LProps = {
+  records: Recordable[];
+} & Pick<Props, 'mode' | 'updateRecord'>;
+
+type TProps = {
   record: Recordable;
-  mode: boolean;
   update: (value: Recordable) => void;
-}
+} & Pick<Props, 'mode'>;
 
 const Timestamp: React.FC<TProps> = ({ record, mode, update }) => {
   const date = new Date(record.timestamp)
@@ -60,31 +64,47 @@ const RecordDetails: React.FC<TProps> = ({ record, mode, update }) => {
   );
 };
 
+const RecordList: React.FC<LProps> = ({ records, mode, updateRecord }) => {
+  const ref = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!mode && ref.current) {
+      ref.current.scrollTop = ref.current?.scrollHeight;
+    }
+  });
+
+  return (
+    <div className="record-list" ref={ref}>
+      {records.map((record) => (
+        <div key={record.id} className="record-item">
+          <RecordDetails record={record} mode={mode} update={(u) => updateRecord(record.id, u)} />
+          {mode && record.subRecords && (
+            <div className="record-sub-items">
+              {record.subRecords.map((subRecord) => (
+                <RecordDetails
+                  record={subRecord}
+                  mode={mode}
+                  update={(u) => updateRecord(subRecord.id, u)}
+                  key={subRecord.id}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const Records: React.FC<Props> = ({ records, mode, updateRecord }) => {
   return (
     <div className="records">
       {Object.keys(records)
-        .sort()
+        .sort((a: string, b: string) => compareAsc(new Date(a), new Date(b)))
         .map((group) => (
           <div className="group" key={group}>
             <div className="group-title">{group}</div>
-            {records[group].map((record) => (
-              <div key={record.id} className="record-item">
-                <RecordDetails record={record} mode={mode} update={(u) => updateRecord(record.id, u)} />
-                {mode && record.subRecords && (
-                  <div className="record-sub-items">
-                    {record.subRecords.map((subRecord) => (
-                      <RecordDetails
-                        record={subRecord}
-                        mode={mode}
-                        update={(u) => updateRecord(subRecord.id, u)}
-                        key={subRecord.id}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            <RecordList mode={mode} updateRecord={updateRecord} records={records[group]} />
           </div>
         ))}
     </div>

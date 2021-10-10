@@ -53,6 +53,7 @@ const useRecorder = (seed = [] as Recordable[], save?: (data: any) => void ): Re
 
     const submitQueue = () => {
         setRecords(queue);
+        save?.(new RecordBuilder(queue).compress().get);
         setQueue([]);
     };
     
